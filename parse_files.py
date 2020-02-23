@@ -8,18 +8,24 @@ def main(client, path, infile):
 
     # Open and read input file
     try:
+        if verbose:
+            print('Opening source file: ' + path + infile)
         with open(path + infile, 'r', encoding='utf-8') as input_file:
             for line in input_file:
                 try:
                     record = json.loads(line)
 
                 except:
-                    print('Non-JSON record skipped:')
-                    print(' ' * 5 + line)
+                    if verbose:
+                        print('')
+                        print('*** WARNING ***  Non-JSON record skipped:')
+                        print(' ' * 5 + line)
 
                 else:
                     # Open and write output file
                     output_file = 'YM_' + client + '_CCPA' + date + record["request_id"] + '.json'
+                    if verbose:
+                        print('Writing parsed file: ' + path + output_file)
                     try:
                         with open(path + output_file, 'w+') as json_file:
                             json_file.write(json.dumps(record))
@@ -39,7 +45,13 @@ if __name__ == "__main__":
     parser.add_argument('directory', metavar = 'path', help = 'working files directory')
     parser.add_argument('file', metavar = 'file', help = 'target file to be parsed')
     parser.add_argument('-c', '--clean', action='store_true', default=False, dest='boolean_clean', help = 'remove the target file after processing')
+    parser.add_argument('-v', '--verbose', action='store_true', default=False, dest='verbose', help = 'turn on script output')
     args = parser.parse_args()
+
+    # Global verbosity flag
+    verbose = args.verbose
+    if verbose:
+        print('')
 
     # Call main() function
     main(client = args.client, path = args.directory, infile = args.file)
@@ -48,5 +60,9 @@ if __name__ == "__main__":
     if args.boolean_clean:
         try:
             os.remove(args.directory + args.file)
+            if verbose:
+                print('Removed source file: ' + args.directory + args.file)
         except FileNotFoundError:
             print('Unable to remove: ' + args.directory + args.file)
+    if verbose:
+        print('')
