@@ -6,10 +6,11 @@ def main(client, path, infile):
 
     date = datetime.today().strftime('_%Y%m%d_')
 
+    if verbose:
+        print('Opening source file: ' + path + infile)
+    
     # Open and read input file
     try:
-        if verbose:
-            print('Opening source file: ' + path + infile)
         with open(path + infile, 'r', encoding='utf-8') as input_file:
             for line in input_file:
                 try:
@@ -22,10 +23,11 @@ def main(client, path, infile):
                         print(' ' * 5 + line)
 
                 else:
-                    # Open and write output file
                     output_file = 'YM_' + client + '_CCPA' + date + record["request_id"] + '.json'
                     if verbose:
                         print('Writing parsed file: ' + path + output_file)
+                    
+                    # Open and write output file
                     try:
                         with open(path + output_file, 'w+') as json_file:
                             json_file.write(json.dumps(record))
