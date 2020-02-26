@@ -18,6 +18,7 @@ def main(client, path, infile):
 
                 except:
                     if verbose:
+                        # Assumed header/footer record
                         print('')
                         print('*** WARNING ***  Non-JSON record skipped:')
                         print(' ' * 5 + line)
